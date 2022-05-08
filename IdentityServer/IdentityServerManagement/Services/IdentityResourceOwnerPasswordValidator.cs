@@ -18,7 +18,7 @@ namespace IdentityServerManagement.Services
         }
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var existUser = await _userManager.FindByIdAsync(context.UserName);
+            var existUser = await _userManager.FindByNameAsync(context.UserName);
             if (existUser is null)
             {
                 var errors = new Dictionary<string, object>();

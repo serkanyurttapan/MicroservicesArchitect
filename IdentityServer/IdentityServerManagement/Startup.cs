@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using IdentityServer4;
+using IdentityServerManagement;
 using IdentityServerManagement.Data;
 using IdentityServerManagement.Models;
 using IdentityServerManagement.Services;
@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace IdentityServerManagement
 {
@@ -31,6 +30,7 @@ namespace IdentityServerManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLocalApiAuthentication();
+
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -51,14 +51,17 @@ namespace IdentityServerManagement
                 options.EmitStaticAudienceClaim = true;
             })
                 .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiResources(Config.ApiResources)
+               .AddInMemoryApiResources(Config.ApiResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.Clients)
                 .AddAspNetIdentity<ApplicationUser>();
 
+            builder.AddResourceOwnerValidator<IdentityResourceOwnerPasswordValidator>();
+            //builder.AddExtensionGrantValidator<TokenExchangeExtensionGrantValidator>();
+
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
-            builder.AddResourceOwnerValidator<IdentityResourceOwnerPasswordValidator>();
+
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
