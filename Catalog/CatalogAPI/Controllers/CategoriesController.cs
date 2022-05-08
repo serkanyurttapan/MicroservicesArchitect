@@ -1,11 +1,13 @@
 ﻿using CatalogAPI.Dtos;
 using CatalogAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ControllerBases;
 using System.Threading.Tasks;
 
 namespace CatalogAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : CustomBaseController
