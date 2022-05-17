@@ -1,4 +1,6 @@
+using DiscountAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +10,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Shared.Service;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PhotoStockAPI
+namespace DiscountAPI
 {
     public class Startup
     {
@@ -27,19 +31,24 @@ namespace PhotoStockAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+            //new AuthorizationPolicyBuilder().RequireClaim("scope", "discount_read");
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
-          {
-              opt.Authority = Configuration["IdentityServerUrl"];
-              opt.Audience = "resource_photo_stock";
-              opt.RequireHttpsMetadata = false;
-          });
-            services.AddControllers(opt =>
-           {
-               opt.Filters.Add(new AuthorizeFilter());
-           });
+            {
+                opt.Authority = Configuration["IdentityServerUrl"];
+                opt.Audience = "resource_discount";
+                opt.RequireHttpsMetadata = false;
+            });
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<ISharedIdentityService, SharedIdentityService>();
+            services.AddControllers(x => x.Filters.Add(new AuthorizeFilter(requireAuthorizePolicy)));
+            services.AddScoped<IDiscountService, DiscountService>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PhotoStockAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DiscountAPI", Version = "v1" });
             });
         }
 
@@ -50,10 +59,9 @@ namespace PhotoStockAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PhotoStockAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DiscountAPI v1"));
             }
 
-            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
