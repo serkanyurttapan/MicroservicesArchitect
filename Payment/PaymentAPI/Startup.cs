@@ -1,4 +1,3 @@
-using DiscountAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Shared.Service;
 using System;
@@ -18,7 +16,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DiscountAPI
+namespace PaymentAPI
 {
     public class Startup
     {
@@ -32,24 +30,25 @@ namespace DiscountAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-            //new AuthorizationPolicyBuilder().RequireClaim("scope", "discount_read");
-
+            var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
                 opt.Authority = Configuration["IdentityServerUrl"];
-                opt.Audience = "resource_discount";
+                opt.Audience = "resource_payment";
                 opt.RequireHttpsMetadata = false;
             });
 
             services.AddHttpContextAccessor();
+
             services.AddScoped<ISharedIdentityService, SharedIdentityService>();
-            services.AddControllers(x => x.Filters.Add(new AuthorizeFilter(requireAuthorizePolicy)));
-            services.AddScoped<IDiscountService, DiscountService>();
+
+
+            services.AddControllers(x=>x.Filters.Add(new AuthorizeFilter(policy)));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DiscountAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentAPI", Version = "v1" });
             });
         }
 
@@ -59,13 +58,14 @@ namespace DiscountAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                IdentityModelEventSource.ShowPII = true;
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DiscountAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaymentAPI v1"));
             }
 
             app.UseRouting();
+
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

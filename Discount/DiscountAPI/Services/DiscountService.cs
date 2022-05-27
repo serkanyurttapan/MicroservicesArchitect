@@ -37,7 +37,7 @@ namespace DiscountAPI.Services
         public async Task<Response<Discount>> GetByCodeAndUserId(string code, string userId)
         {
 
-            var discount = await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount where userid=@UserId,code=@Code", new { userId, code });
+            var discount = await _dbConnection.QueryAsync<Discount>("SELECT * FROM discount WHERE userid=@UserId AND code=@Code", new { userId, code });
             var hasDiscount = discount.FirstOrDefault();
             return hasDiscount != null ? Response<Discount>.Success(hasDiscount, 200) : Response<Discount>.Fail("discount not found", 404);
         }

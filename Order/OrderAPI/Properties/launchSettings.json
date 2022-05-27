@@ -4,10 +4,11 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5011",
+      "applicationUrl": "http://localhost:33368",
       "sslPort": 0
     }
   },
+  "IdentityServerUrl": null,
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
@@ -17,15 +18,15 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "CatalogAPI": {
+    "OrderAPI": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": false,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5011",
+      "applicationUrl": "http://localhost:5015",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    }  
+    }
   }
 }
