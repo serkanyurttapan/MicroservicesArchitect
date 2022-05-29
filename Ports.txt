@@ -1,6 +1,7 @@
 
 *Gateway => 5000
 *IdentityServer  => 5001
+*Web =>5010
 *Services
 -CatalogAPI => 5011
 -PhotoStockAPI => 5012

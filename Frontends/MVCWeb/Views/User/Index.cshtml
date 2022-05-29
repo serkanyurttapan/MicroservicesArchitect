@@ -1,0 +1,41 @@
+﻿@model UserViewModel
+<div class="row">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">
+                    <span class="alert-info">UserInfo</span>
+
+                    <table class="table table-striped">
+                        <tr>
+                            <td>
+                                @nameof(@Model.Username)
+                            </td>
+                            <td>
+                                @Model.Username
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @nameof(@Model.Email)
+                            </td>
+                            <td>
+                                @Model.Email
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @nameof(@Model.City)
+                            </td>
+                            <td>
+                                @Model.City
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>
