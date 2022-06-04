@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -24,5 +25,6 @@ namespace MVCWeb.Models.Catalog
         public string CategoryId { get; set; }
         [Display(Name = "Kurs açıklama")]
         public string Description { get; set; }
+        public IFormFile PhotoFormFile { get; set; }
     }
 }

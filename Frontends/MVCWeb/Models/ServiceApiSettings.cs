@@ -11,6 +11,8 @@ namespace MVCWeb.Models
         public string PhotoStockUri { get; set; }
         public string GatewayBaseUri { get; set; }
         public ServiceApi Catalog { get; set; }
+        public ServiceApi PhotoStock { get; set; }
+
     }
     public class ServiceApi
     {

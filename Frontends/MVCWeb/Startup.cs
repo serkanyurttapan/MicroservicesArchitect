@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MVCWeb.Helper;
 using MVCWeb.Helper.Handler;
 using MVCWeb.Models;
 using MVCWeb.Services;
@@ -35,6 +36,8 @@ namespace MVCWeb
 
             services.AddAccessTokenManagement();
 
+            services.AddSingleton<PhotoHelper>();
+
             var serviceApiSettings = Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();
 
             services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>();
@@ -52,6 +55,13 @@ namespace MVCWeb
              {
                  opt.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.Catalog.Path}");
              }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+
+
+            services.AddHttpClient<IPhotoStockService, PhotoStockService>(opt =>
+            {
+                opt.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.PhotoStock.Path}");
+            }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
              {

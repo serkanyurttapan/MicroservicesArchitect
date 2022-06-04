@@ -1,8 +1,39 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@model List<CourseViewModel>
+@{
+    var count = 0;
 }
+<h2>Kurslar</h2>
+<hr />
+@if (Model.Any())
+{
+     @foreach (var item in Model)
+    {
+        count++;
+        if (count == 1 || (count % 3 == 1))
+        {
+            @Html.Raw("<div class='row row-cols-1 row-cols-md-3 g-4 mb-2' >")
+        }
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://media.istockphoto.com/photos/business-man-pushing-large-stone-up-to-hill-business-heavy-tasks-and-picture-id825383494?k=20&m=825383494&s=612x612&w=0&h=tEqZ5HFZcM3lmDm_cmI7hOeceiqy9gYrkyLTTkrXdY4=" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <div class="badge bg-primary">Kategori : @item.Category.Name</div>
+                    <p class="card-text">@item.DescriptionFormat</p>
+                    <h4 class="text-primary">@item.Price TL</h4>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+                    <div>
+                        <a asp-controller="Home" asp-action="Detail" class="btn btn-success" asp-route-id="@item.Id">Detay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        if (count % 3 == 0)
+        {
+            @Html.Raw("</div>")
+        }
+
+    }
+}

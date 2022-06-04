@@ -29,7 +29,7 @@ namespace PhotoStockAPI.Controllers
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/photos", formFile.FileName);
             using var stream = new FileStream(path, FileMode.Create);
             await formFile.CopyToAsync(stream, cancellationToken);
-            var returnPath = "photos/" + formFile.FileName;
+            var returnPath = formFile.FileName;
 
             PhotoDto photoDto = new()
             {

@@ -46,7 +46,7 @@ namespace MVCWeb.Controllers
         }
         public async Task<IActionResult> Update(string Id)
         {
-            CourseUpdateInput courseUpdateInput=null;
+            CourseUpdateInput courseUpdateInput = null;
             var course = await _catalogService.GetByCourseIdAsync(Id);
             var categories = await _catalogService.GetAllCategoryAsync();
             ViewBag.categoryList = new SelectList(categories, "Id", "Name", course.Id);
@@ -56,7 +56,7 @@ namespace MVCWeb.Controllers
 
             else
             {
-                 courseUpdateInput = new()
+                courseUpdateInput = new()
                 {
                     Id = course.Id,
                     Name = course.Name,
@@ -69,6 +69,24 @@ namespace MVCWeb.Controllers
                 await _catalogService.UpdateCourseAsync(courseUpdateInput);
             }
             return View(courseUpdateInput);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(CourseUpdateInput courseUpdateInput)
+        {
+            var categories = await _catalogService.GetAllCategoryAsync();
+            ViewBag.categoryList = new SelectList(categories, "Id", "Name", courseUpdateInput.Id);
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            await _catalogService.UpdateCourseAsync(courseUpdateInput);
+           return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            await _catalogService.DeleteCourseAsync(Id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

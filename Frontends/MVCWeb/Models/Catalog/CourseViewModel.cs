@@ -17,5 +17,16 @@ namespace MVCWeb.Models.Catalog
         public string CategoryId { get; set; }
         public CategoryViewModel Category { get; set; }
         public string Description { get; set; }
+        public string DescriptionFormat
+        {
+            get
+            {
+                if (Description != null)
+                {
+                    return Description.Length > 100 ? $"{Description.Substring(0, 100)}..." : Description;
+                }
+                return Description;
+            }
+        }
     }
 }

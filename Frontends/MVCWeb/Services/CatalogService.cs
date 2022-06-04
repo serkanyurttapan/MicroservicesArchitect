@@ -1,4 +1,5 @@
-﻿using MVCWeb.Models;
+﻿using MVCWeb.Helper;
+using MVCWeb.Models;
 using MVCWeb.Models.Catalog;
 using MVCWeb.Services.Interfaces;
 using Shared.Dtos;
@@ -17,14 +18,27 @@ namespace MVCWeb.Services
         //private readonly ServiceApiSettings _serviceApiSettings;
 
         private readonly HttpClient _httpClient;
-        public CatalogService(HttpClient httpClient)
+        private readonly IPhotoStockService _photoStockService;
+        private readonly PhotoHelper _photoHelper;
+
+        public CatalogService(HttpClient httpClient, IPhotoStockService photoStockService, PhotoHelper photoHelper)
         {
             _httpClient = httpClient;
+            _photoStockService = photoStockService;
+            _photoHelper = photoHelper;
         }
+
 
         public async Task<bool> AddCourseAsync(CourseCreateInput courseCreateInput)
         {
-            var response =  await _httpClient.PostAsJsonAsync("courses", courseCreateInput);
+
+            var resultPhotoService = await _photoStockService.UploadPhoto(courseCreateInput.PhotoFormFile);
+            if (resultPhotoService != null)
+            {
+                courseCreateInput.Picture = resultPhotoService.Data.Url;
+            }
+
+            var response = await _httpClient.PostAsJsonAsync("courses", courseCreateInput);
             return response.IsSuccessStatusCode;
         }
 
@@ -54,17 +68,28 @@ namespace MVCWeb.Services
                 return null;
             }
             var responseSuccess = await response.Content.ReadFromJsonAsync<Response<List<CourseViewModel>>>();
+
+            responseSuccess.Data.ForEach(x =>
+            {
+                x.Picture = _photoHelper.GetPhotoStockUrl(x.Picture);
+            });
             return responseSuccess.Data;
         }
 
         public async Task<List<CourseViewModel>> GetAllCourseByUserIdAsync(string userId)
         {
             var response = await _httpClient.GetAsync($"courses/GetAllByUserId/{userId}");
-            
+
             if (!response.IsSuccessStatusCode)
                 return null;
-            
+
             var responseStatus = await response.Content.ReadFromJsonAsync<Response<List<CourseViewModel>>>();
+
+            responseStatus.Data.ForEach(x =>
+            {
+                x.Picture = _photoHelper.GetPhotoStockUrl(x.Picture);
+            });
+
             return responseStatus.Data;
         }
 
@@ -76,6 +101,8 @@ namespace MVCWeb.Services
                 return null;
 
             var responseStatus = await response.Content.ReadFromJsonAsync<Response<CourseViewModel>>();
+
+
             return responseStatus.Data;
         }
 
