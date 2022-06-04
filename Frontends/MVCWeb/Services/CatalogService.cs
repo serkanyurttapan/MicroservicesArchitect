@@ -71,7 +71,7 @@ namespace MVCWeb.Services
 
             responseSuccess.Data.ForEach(x =>
             {
-                x.Picture = _photoHelper.GetPhotoStockUrl(x.Picture);
+                x.StockPictureUrl = _photoHelper.GetPhotoStockUrl(x.Picture);
             });
             return responseSuccess.Data;
         }
@@ -87,7 +87,7 @@ namespace MVCWeb.Services
 
             responseStatus.Data.ForEach(x =>
             {
-                x.Picture = _photoHelper.GetPhotoStockUrl(x.Picture);
+                x.StockPictureUrl = _photoHelper.GetPhotoStockUrl(x.Picture);
             });
 
             return responseStatus.Data;
@@ -102,6 +102,7 @@ namespace MVCWeb.Services
 
             var responseStatus = await response.Content.ReadFromJsonAsync<Response<CourseViewModel>>();
 
+            responseStatus.Data.StockPictureUrl = _photoHelper.GetPhotoStockUrl(responseStatus.Data.Picture);
 
             return responseStatus.Data;
         }

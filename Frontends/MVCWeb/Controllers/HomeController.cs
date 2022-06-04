@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVCWeb.Models;
 using MVCWeb.Services.Interfaces;
@@ -30,9 +31,20 @@ namespace MVCWeb.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Detail(string id)
+        {
+            return View(await _catalogService.GetByCourseIdAsync(id));
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            var errorFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            if (errorFeature != null && errorFeature.Error is UnauthorizedAccessException)
+            {
+                return RedirectToAction(nameof(AuthController.LogOut), "Auth");
+            }
+
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
