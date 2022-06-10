@@ -31,7 +31,8 @@ namespace BasketAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateBasket(BasketDto basketDto)
         {
-            return CreateActionResult( await _basketService.SaveOrUpdate(basketDto));
+            basketDto.UserId = _sharedIdentityService.GetUserId();
+            return CreateActionResult(await _basketService.SaveOrUpdate(basketDto));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteBasket()

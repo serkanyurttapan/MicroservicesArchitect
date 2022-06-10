@@ -59,7 +59,8 @@ namespace IdentityServerManagement
                     AllowedScopes={
                         "catalog_fullpermission",
                         "photo_stock_fullpermission",
-                        "gateway_fullpermission", IdentityServerConstants.LocalApi.ScopeName }
+                        "gateway_fullpermission",
+                        IdentityServerConstants.LocalApi.ScopeName }
                 },
                    new Client
                 {

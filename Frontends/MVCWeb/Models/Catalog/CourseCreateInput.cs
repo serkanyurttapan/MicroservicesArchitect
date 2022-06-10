@@ -12,6 +12,7 @@ namespace MVCWeb.Models.Catalog
     {
         [Display(Name = "Kurs ismi")]
         [Required]
+        //fluent validation
         public string Name { get; set; }
         [Display(Name = "Kurs fiyat")]
         [Required]

@@ -7,9 +7,13 @@ namespace MVCWeb.Models.Baskets
 {
     public class BasketViewModel
     {
+        public BasketViewModel()
+        {
+            _basketItemViews = new List<BasketItemViewModel>();
+        }
         public string UserId { get; set; }
         public string DiscountCode { get; set; }
-        public int? DiscountRate { get; set; }
+        public int DiscountRate { get; set; }
         private List<BasketItemViewModel> _basketItemViews { get; set; }
         public decimal TotalPrice
         {
@@ -26,7 +30,7 @@ namespace MVCWeb.Models.Baskets
                 {
                     _basketItemViews.ForEach(x =>
                     {
-                        var discountPrice = x.Price * ((decimal)DiscountRate.Value / 100);
+                        var discountPrice = x.Price * ((decimal)DiscountRate / 100);
                         x.AppliedDiscount(Math.Round((x.Price - discountPrice), 2));
                     });
                 }
