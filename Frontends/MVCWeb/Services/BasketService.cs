@@ -1,4 +1,6 @@
-﻿using MVCWeb.Models.Baskets;
+﻿using Microsoft.AspNetCore.Mvc;
+using MVCWeb.Models.Baskets;
+using MVCWeb.Models.Discount;
 using MVCWeb.Services.Interfaces;
 using Shared.Dtos;
 using System;
@@ -13,12 +15,12 @@ namespace MVCWeb.Services
     public class BasketService : IBasketService
     {
         private readonly HttpClient _httpClient;
-        //private readonly IDiscountService _discountService;
+        private readonly IDiscountService _discountService;
 
-        public BasketService(HttpClient httpClient)
+        public BasketService(HttpClient httpClient, IDiscountService discountService)
         {
             _httpClient = httpClient;
-            //_discountService = discountService;
+            _discountService = discountService;
         }
 
         public async Task AddBasketItem(BasketItemViewModel basketItemViewModel)
@@ -52,14 +54,14 @@ namespace MVCWeb.Services
                 return false;
             }
 
-            //var hasDiscount = await _discountService.GetDiscount(discountCode);
-            //if (hasDiscount == null)
-            //{
-            //    return false;
-            //}
+            var hasDiscount = await _discountService.GetDiscount(discountCode);
+            if (hasDiscount == null)
+            {
+                return false;
+            }
 
-            //basket.ApplyDiscount(hasDiscount.Code, hasDiscount.Rate);
-            //await SaveOrUpdate(basket);
+            basket.ApplyDiscount(hasDiscount.Code, hasDiscount.Rate);
+            await SaveOrUpdate(basket);
             return true;
         }
 
@@ -72,7 +74,7 @@ namespace MVCWeb.Services
                 return false;
             }
 
-            //basket.CancelDiscount();
+            basket.CancelDiscount();
             await SaveOrUpdate(basket);
             return true;
         }
@@ -135,5 +137,6 @@ namespace MVCWeb.Services
 
             return response.IsSuccessStatusCode;
         }
+
     }
 }

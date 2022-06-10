@@ -9,7 +9,8 @@ namespace BasketAPI.Dtos
     {
         public string UserId { get; set; }
         public string DiscountCode { get; set; }
-        public List<BasketItemDto> BasketItems{ get; set; }
+        public string DiscountRate { get; set; }
+        public List<BasketItemDto> BasketItems { get; set; }
 
         public decimal TotalPrice
         {

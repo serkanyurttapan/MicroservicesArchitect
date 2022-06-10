@@ -58,6 +58,11 @@ namespace MVCWeb.Extensions
 
             }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
 
+            services.AddHttpClient<IDiscountService, DiscountService>(x =>
+             {
+                 x.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.Discount.Path}");
+             });
+
             services.AddControllersWithViews().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<CourseCreateInputValidator>());
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
@@ -67,7 +72,6 @@ namespace MVCWeb.Extensions
                 opt.SlidingExpiration = true;
                 opt.Cookie.Name = "microservicewebcookie";
             });
-
         }
     }
 }
